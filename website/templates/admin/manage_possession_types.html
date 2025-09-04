@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Gérer les Types de Possession{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <h1 class="text-4xl font-bold text-[#8C1F28] mb-8 animate-fade-in-up">Gérer les Types de Possession</h1>
+    
+    <!-- Create Category Form -->
+    <div class="glass p-8 rounded-2xl shadow-xl mb-12 animate-fade-in-up">
+        <h2 class="text-2xl font-semibold text-[#044040] mb-6">Ajouter une catégorie</h2>
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <input type="hidden" name="create_category" value="1">
+            <div>
+                <label for="name" class="block text-sm font-medium text-[#000]">Nom</label>
+                <input type="text" name="name" id="name" required 
+                       class="mt-1 block w-full p-3 bg-[#F2F2F2]/10 border border-[#000]/30 rounded-lg text-[#000] placeholder-[#000]/50 focus:outline-none focus:ring-2 focus:ring-[#044040] focus:border-transparent transition-all duration-300 hover-scale">
+            </div>
+            <div>
+                <label for="description" class="block text-sm font-medium text-[#000]">Description</label>
+                <textarea name="description" id="description" required 
+                          class="mt-1 block w-full p-3 bg-[#F2F2F2]/10 border border-[#000]/30 rounded-lg text-[#000] placeholder-[#000]/50 focus:outline-none focus:ring-2 focus:ring-[#044040] focus:border-transparent transition-all duration-300"></textarea>
+            </div>
+            <button type="submit" 
+                    class="bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] px-6 py-3 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                Ajouter
+            </button>
+        </form>
+    </div>
+    
+    <!-- Create Possession Type Form -->
+    <div class="glass p-8 rounded-2xl shadow-xl mb-12 animate-fade-in-up">
+        <h2 class="text-2xl font-semibold text-[#044040] mb-6">Ajouter un type de possession</h2>
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <input type="hidden" name="create_type" value="1">
+            <div>
+                <label for="category" class="block text-sm font-medium text-[#000]">Catégorie</label>
+                <select name="category" id="category" required 
+                        class="mt-1 block w-full p-3 bg-[#F2F2F2]/10 border border-[#000]/30 rounded-lg text-[#000] focus:outline-none focus:ring-2 focus:ring-[#044040] focus:border-transparent transition-all duration-300">
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="name" class="block text-sm font-medium text-[#000]">Nom</label>
+                <input type="text" name="name" id="name" required 
+                       class="mt-1 block w-full p-3 bg-[#F2F2F2]/10 border border-[#000]/30 rounded-lg text-[#000] placeholder-[#000]/50 focus:outline-none focus:ring-2 focus:ring-[#044040] focus:border-transparent transition-all duration-300 hover-scale">
+            </div>
+            <div>
+                <label for="description" class="block text-sm font-medium text-[#000]">Description</label>
+                <textarea name="description" id="description" required 
+                          class="mt-1 block w-full p-3 bg-[#F2F2F2]/10 border border-[#000]/30 rounded-lg text-[#000] placeholder-[#000]/50 focus:outline-none focus:ring-2 focus:ring-[#044040] focus:border-transparent transition-all duration-300"></textarea>
+            </div>
+            <div>
+                <label for="point_value" class="block text-sm font-medium text-[#000]">Valeur en points</label>
+                <input type="number" name="point_value" id="point_value" step="0.0001" required 
+                       class="mt-1 block w-full p-3 bg-[#F2F2F2]/10 border border-[#000]/30 rounded-lg text-[#000] placeholder-[#000]/50 focus:outline-none focus:ring-2 focus:ring-[#044040] focus:border-transparent transition-all duration-300 hover-scale">
+            </div>
+            <button type="submit" 
+                    class="bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] px-6 py-3 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                Ajouter
+            </button>
+        </form>
+    </div>
+    
+    <!-- List Categories and Types -->
+    <div class="glass p-8 rounded-2xl shadow-xl">
+        <h2 class="text-2xl font-semibold text-[#044040] mb-6">Catégories et Types Existants</h2>
+        {% for category in categories %}
+            <div class="mb-8">
+                <h3 class="text-xl font-medium text-[#D92525]">{{ category.name }}</h3>
+                <p class="text-sm text-[#F2F2F2]/80">{{ category.description }}</p>
+                <ul class="mt-4 space-y-3">
+                    {% for type in types %}
+                        {% if type.category.id == category.id %}
+                            <li class="bg-[#F2F2F2]/10 p-4 rounded-lg hover:bg-[#F2F2F2]/20 transition-all duration-300 hover-scale">
+                                <p class="font-medium text-[#D92525]">{{ type.name }}</p>
+                                <p class="text-sm text-[#000]/80">Points: {{ type.point_value|floatformat:4 }}</p>
+                                <p class="text-sm text-[#000]/80">{{ type.description }}</p>
+                            </li>
+                {% endif%}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+    </div>
+    </div>
+</div>
+{% endblock %}

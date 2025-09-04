@@ -1,0 +1,291 @@
+- model: website.user
+  pk: 1
+  fields:
+    username: ahmed_bensaid
+    first_name: Ahmed
+    last_name: Bensaid
+    user_type: citizen
+    national_id: MA123456
+    phone_number: "+212612345678"
+    birth_date: 1990-05-15
+    address: "12 Rue Mohammed V, Tiflet"
+    is_verified: true
+    verification_code: "123456"
+    created_at: 2025-09-01T09:00:00Z
+    updated_at: 2025-09-01T09:00:00Z
+    password: ""
+    is_active: true
+    is_staff: false
+    is_superuser: false
+- model: website.user
+  pk: 2
+  fields:
+    username: fatima_zahra
+    first_name: Fatima
+    last_name: Zahra
+    user_type: data_entry_staff
+    national_id: MA789012
+    phone_number: "+212623456789"
+    birth_date: 1985-03-22
+    address: "45 Avenue Hassan II, Rabat"
+    is_verified: true
+    verification_code: "123456"
+    created_at: 2025-09-01T09:00:00Z
+    updated_at: 2025-09-01T09:00:00Z
+    password: ""
+    is_active: true
+    is_staff: true
+    is_superuser: false
+- model: website.user
+  pk: 3
+  fields:
+    username: mohammed_alaoui
+    first_name: Mohammed
+    last_name: Alaoui
+    user_type: investigator
+    national_id: MA345678
+    phone_number: "+212634567890"
+    birth_date: 1988-07-10
+    address: "78 Boulevard Allal Ben Abdallah, Tiflet"
+    is_verified: true
+    verification_code: "123456"
+    created_at: 2025-09-01T09:00:00Z
+    updated_at: 2025-09-01T09:00:00Z
+    password: ""
+    is_active: true
+    is_staff: true
+    is_superuser: false
+- model: website.user
+  pk: 4
+  fields:
+    username: aicha_benali
+    first_name: Aicha
+    last_name: Benali
+    user_type: supervisor
+    national_id: MA901234
+    phone_number: "+212645678901"
+    birth_date: 1975-11-30
+    address: "23 Rue Ibn Sina, Tiflet"
+    is_verified: true
+    verification_code: "123456"
+    created_at: 2025-09-01T09:00:00Z
+    updated_at: 2025-09-01T09:00:00Z
+    password: ""
+    is_active: true
+    is_staff: true
+    is_superuser: false
+- model: website.user
+  pk: 5
+  fields:
+    username: admin_user
+    first_name: Admin
+    last_name: User
+    user_type: admin
+    national_id: MA567890
+    phone_number: "+212656789012"
+    birth_date: 1980-01-01
+    address: "1 Place Centrale, Rabat"
+    is_verified: true
+    verification_code: "123456"
+    created_at: 2025-09-01T09:00:00Z
+    updated_at: 2025-09-01T09:00:00Z
+    password: ""
+    is_active: true
+    is_staff: true
+    is_superuser: true
+- model: website.socialindicatorthreshold
+  pk: 1
+  fields:
+    program_type: amo
+    max_score: 9.7000
+    effective_date: 2025-01-01
+    is_active: true
+    created_by: 5
+- model: website.socialindicatorthreshold
+  pk: 2
+  fields:
+    program_type: social_aid
+    max_score: 9.3500
+    effective_date: 2025-01-01
+    is_active: true
+    created_by: 5
+
+- model: website.possessioncategory
+  pk: 1
+  fields:
+    name: Immobilier
+    description: Propriétés immobilières
+    is_active: true
+- model: website.possessioncategory
+  pk: 2
+  fields:
+    name: Véhicule
+    description: Véhicules motorisés
+    is_active: true
+
+- model: website.possessiontype
+  pk: 1
+  fields:
+    category: 1
+    name: Maison
+    description: Maison résidentielle
+    point_value: 5.0000
+    is_active: true
+    created_at: 2025-09-01T09:00:00Z
+- model: website.possessiontype
+  pk: 2
+  fields:
+    category: 2
+    name: Voiture
+    description: Voiture personnelle
+    point_value: 3.0000
+    is_active: true
+    created_at: 2025-09-01T09:00:00Z
+
+- model: website.citizenprofile
+  pk: 1
+  fields:
+    user: 1
+    family_size: 4
+    monthly_income: 5000.00
+    has_other_insurance: false
+    other_insurance_details: ""
+    current_social_indicator: 8.0000
+    last_calculated: 2025-09-01T10:00:00Z
+
+- model: website.citizenpossession
+  pk: 1
+  fields:
+    citizen: 1
+    possession_type: 1
+    description: Maison à Tiflet
+    acquisition_date: 2020-06-15
+    estimated_value: 500000.00
+    status: active
+    added_by: 2
+    created_at: 2025-09-01T10:00:00Z
+    updated_at: 2025-09-01T10:00:00Z
+- model: website.citizenpossession
+  pk: 2
+  fields:
+    citizen: 1
+    possession_type: 2
+    description: Voiture Renault
+    acquisition_date: 2022-03-10
+    estimated_value: 120000.00
+    status: disputed
+    added_by: 2
+    created_at: 2025-09-01T10:00:00Z
+    updated_at: 2025-09-01T10:00:00Z
+
+- model: website.reclamation
+  pk: "550e8400-e29b-41d4-a716-446655440000"
+  fields:
+    citizen: 1
+    possession: 2
+    reason: La voiture n'est pas à moi
+    evidence_description: Documents de location
+    status: pending
+    assigned_investigator: 3
+    investigation_notes: ""
+    resolution_date: null
+    created_at: 2025-09-02T08:00:00Z
+    updated_at: 2025-09-02T08:00:00Z
+
+- model: website.fine
+  pk: 1
+  fields:
+    reclamation: "550e8400-e29b-41d4-a716-446655440000"
+    amount: 1000.00
+    reason: Reclamation rejetée pour fausse déclaration
+    applied_by: 3
+    is_paid: false
+    payment_date: null
+    created_at: 2025-09-02T09:00:00Z
+
+- model: website.application
+  pk: "550e8400-e29b-41d4-a716-446655440001"
+  fields:
+    citizen: 1
+    program_type: amo
+    status: submitted
+    social_indicator_at_submission: 8.0000
+    threshold_at_submission: 10.0000
+    reviewed_by: null
+    review_notes: ""
+    submitted_at: 2025-09-01T12:00:00Z
+    reviewed_at: null
+    created_at: 2025-09-01T12:00:00Z
+    updated_at: 2025-09-01T12:00:00Z
+- model: website.application
+  pk: "550e8400-e29b-41d4-a716-446655440002"
+  fields:
+    citizen: 1
+    program_type: social_aid
+    status: draft
+    social_indicator_at_submission: 8.0000
+    threshold_at_submission: 15.0000
+    reviewed_by: null
+    review_notes: ""
+    submitted_at: null
+    reviewed_at: null
+    created_at: 2025-09-01T12:00:00Z
+    updated_at: 2025-09-01T12:00:00Z
+
+- model: website.socialindicatorcalculation
+  pk: 1
+  fields:
+    citizen: 1
+    total_score: 8.0000
+    calculation_date: 2025-09-01T10:00:00Z
+    calculated_by: 2
+    notes: Calcul initial pour Ahmed Bensaid
+
+- model: website.calculationitem
+  pk: 1
+  fields:
+    calculation: 1
+    possession: 1
+    possession_name: Maison
+    point_value: 5.0000
+- model: website.calculationitem
+  pk: 2
+  fields:
+    calculation: 1
+    possession: 2
+    possession_name: Voiture
+    point_value: 3.0000
+
+- model: website.auditlog
+  pk: 1
+  fields:
+    user: 1
+    action_type: user_login
+    description: Connexion réussie pour ahmed_bensaid
+    ip_address: "192.168.1.1"
+    user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/117.0.0.0"
+    related_citizen: null
+    metadata: {}
+    timestamp: 2025-09-01T09:00:00Z
+- model: website.auditlog
+  pk: 2
+  fields:
+    user: 2
+    action_type: possession_added
+    description: Possession 'Maison' ajoutée pour ahmed_bensaid
+    ip_address: "192.168.1.2"
+    user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/117.0.0.0"
+    related_citizen: 1
+    metadata: {"possession_id": 1}
+    timestamp: 2025-09-01T10:00:00Z
+- model: website.auditlog
+  pk: 3
+  fields:
+    user: 1
+    action_type: reclamation_created
+    description: Réclamation soumise pour Voiture
+    ip_address: "192.168.1.1"
+    user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/117.0.0.0"
+    related_citizen: 1
+    metadata: {"reclamation_id": "550e8400-e29b-41d4-a716-446655440000"}
+    timestamp: 2025-09-02T08:00:00Z

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Panneau d'Administration{% endblock %}
+{% block extra_head %}
+        body {
+            background-image: linear-gradient(to bottom right, #8C1F28, #D92525) !important;
+        }
+        main {
+            padding: 0; /* Remove padding for full-width content */
+        }
+{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center py-12" style="height:fit-content; min-height: 75vh;">
+    <div class="glass p-8 rounded-2xl shadow-2xl w-full max-w-md animate-fade-in-up">
+        <h1 class="text-3xl font-bold text-center text-[#044040] mb-6">Panneau d'Administration</h1>
+        <p class="text-[#000000]/80 mb-6">Bienvenue dans le panneau d'administration. Utilisez les options ci-dessous pour gérer le système.</p>
+        <div class="flex flex-col space-y-4">
+            <a href="{% url 'manage_citizens' %}" 
+               class="bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] px-4 py-2 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                Gérer les citoyens
+            </a>
+            <a href="{% url 'manage_possession_types' %}" 
+               class="bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] px-4 py-2 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                Gérer les types de possessions
+            </a>
+            <a href="{% url 'audit_logs' %}" 
+               class="bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] px-4 py-2 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                Voir les journaux d'audit
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Portail d'Éligibilité - Maroc{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+        .hover-scale {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-scale:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .glass {
+            background: rgba(242, 242, 242, 0.9); /* #F2F2F2 with transparency */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(242, 242, 242, 0.3);
+        }
+        {% block extra_head %}
+        {% endblock %}
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <header class="bg-gradient-to-r from-[#8C1F28] to-[#D92525] text-white shadow-xl sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="{% if user.is_authenticated and user.user_type != 'citizen' %}{% url 'staff_dashboard' %}{% else %}{% url 'citizen_dashboard' %}{% endif %}" 
+               class="text-3xl font-bold tracking-tight text-[#F2F2F2] hover:text-[#044040] transition-colors duration-300">
+                Portail d'Éligibilité
+            </a>
+            <div class="flex space-x-6">
+                {% if user.is_authenticated %}
+                    {% if user.user_type == 'citizen' %}
+                        <a href="{% url 'citizen_dashboard' %}" 
+                           class="px-4 py-2 text-[#F2F2F2] hover:bg-[#591C21] rounded-lg transition-all duration-300 animate-fade-in-up">Tableau de bord</a>
+                        <a href="{% url 'eligibility_calculator' %}" 
+                           class="px-4 py-2 text-[#F2F2F2] hover:bg-[#591C21] rounded-lg transition-all duration-300 animate-fade-in-up">Calculateur</a>
+                        <a href="{% url 'my_reclamations' %}" 
+                           class="px-4 py-2 text-[#F2F2F2] hover:bg-[#591C21] rounded-lg transition-all duration-300 animate-fade-in-up">Mes réclamations</a>
+                        <a href="{% url 'my_applications' %}" 
+                           class="px-4 py-2 text-[#F2F2F2] hover:bg-[#591C21] rounded-lg transition-all duration-300 animate-fade-in-up">Mes demandes</a>
+                    {% elif user.user_type == 'data_entry_staff' %}
+                        <a href="{% url 'staff_dashboard' %}" 
+                           class="px-4 py-2 text-[#F2F2F2] hover:bg-[#591C21] rounded-lg transition-all duration-300 animate-fade-in-up">Tableau de bord</a>
+                        <a href="{% url 'manage_citizens' %}" 
+                           class="px-4 py-2 text-[#F2F2F2] hover:bg-[#591C21] rounded-lg transition-all duration-300 animate-fade-in-up">Citoyens</a>
+                    {% elif user.user_type == 'investigator' %}
+                        <a href="{% url 'staff_dashboard' %}" 
+                           class="px-4 py-2 text-[#F2F2F2] hover:bg-[#591C21] rounded-lg transition-all duration-300 animate-fade-in-up">Tableau de bord</a>
+                    {% elif user.user_type == 'supervisor' %}
+                        <a href="{% url 'staff_dashboard' %}" 
+                           class="px-4 py-2 text-[#F2F2F2] hover:bg-[#591C21] rounded-lg transition-all duration-300 animate-fade-in-up">Tableau de bord</a>
+                        <a href="{% url 'review_applications' %}" 
+                           class="px-4 py-2 text-[#F2F2F2] hover:bg-[#591C21] rounded-lg transition-all duration-300 animate-fade-in-up">Examen des demandes</a>
+                    {% elif user.user_type == 'admin' %}
+                        <a href="{% url 'staff_dashboard' %}" 
+                           class="px-4 py-2 text-[#F2F2F2] hover:bg-[#591C21] rounded-lg transition-all duration-300 animate-fade-in-up">Tableau de bord</a>
+                        <a href="{% url 'manage_citizens' %}" 
+                           class="px-4 py-2 text-[#F2F2F2] hover:bg-[#591C21] rounded-lg transition-all duration-300 animate-fade-in-up">Citoyens</a>
+                        <a href="{% url 'admin_panel' %}" 
+                           class="px-4 py-2 text-[#F2F2F2] hover:bg-[#591C21] rounded-lg transition-all duration-300 animate-fade-in-up">Panneau d'administration</a>
+                    {% endif %}
+                    <a href="{% url 'logout' %}" 
+                       class="px-4 py-2 bg-[#D92525] text-[#F2F2F2] hover:bg-[#591C21] rounded-lg transition-all duration-300 animate-fade-in-up">Déconnexion</a>
+                {% else %}
+                    <a href="{% url 'citizen_login' %}" 
+                       class="px-4 py-2 bg-[#044040] text-[#F2F2F2] hover:bg-[#D92525] rounded-lg transition-all duration-300 animate-fade-in-up">Connexion</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+    <main class="container mx-auto px-6 py-12 flex-grow">
+        {% if messages %}
+            <div class="mb-6 space-y-3">
+                {% for message in messages %}
+                    <div class="{% if message.tags == 'success' %}bg-green-100 text-green-800 border-green-400{% else %}bg-red-100 text-red-800 border-red-400{% endif %} p-4 rounded-xl border shadow-lg animate-fade-in-up">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}
+        {% endblock %}
+    </main>
+    <footer class="bg-gradient-to-r from-[#8C1F28] to-[#D92525] text-[#F2F2F2] py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-sm font-medium">&copy; 2025 Portail d'Éligibilité - Maroc. Tous droits réservés.</p>
+            <p class="text-xs mt-2 text-[#F2F2F2]/80">Développé avec soin pour la Division de la Protection Sociale, Tiflet</p>
+        </div>
+    </footer>
+</body>
+</html>

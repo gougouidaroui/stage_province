@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Journaux d'Audit{% endblock %}
+{% block extra_head %}
+        body {
+            background-image: linear-gradient(to bottom right, #8C1F28, #D92525) !important;
+        }
+        main {
+            padding: 0; /* Remove padding for full-width content */
+        }
+{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center py-12" style="height:fit-content; min-height: 75vh;">
+    <div class="glass p-8 rounded-2xl shadow-2xl w-full max-w-4xl animate-fade-in-up">
+        <h1 class="text-3xl font-bold text-center text-[#044040] mb-6">Journaux d'Audit</h1>
+        {% if logs %}
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="bg-[#F2F2F2]/10">
+                        <th class="p-3 text-left text-[#044040] font-semibold">Action</th>
+                        <th class="p-3 text-left text-[#044040] font-semibold">Utilisateur</th>
+                        <th class="p-3 text-left text-[#044040] font-semibold">Description</th>
+                        <th class="p-3 text-left text-[#044040] font-semibold">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                        <tr class="border-b border-[#F2F2F2]/20">
+                            <td class="p-3 text-[#000000]/80">
+                                {% if log.action_type == 'user_login' %}Connexion
+                                {% elif log.action_type == 'possession_added' %}Ajout de possession
+                                {% elif log.action_type == 'possession_updated' %}Mise à jour de possession
+                                {% elif log.action_type == 'reclamation_created' %}Création de réclamation
+                                {% elif log.action_type == 'reclamation_investigated' %}Investigation de réclamation
+                                {% elif log.action_type == 'fine_applied' %}Application d'amende
+                                {% elif log.action_type == 'application_submitted' %}Soumission de demande
+                                {% elif log.action_type == 'application_reviewed' %}Examen de demande
+                                {% elif log.action_type == 'calculation_performed' %}Calcul d'indicateur social
+                                {% endif %}
+                            </td>
+                            <td class="p-3 text-[#000000]/80">{{ log.user.username }}</td>
+                            <td class="p-3 text-[#000000]/80">{{ log.description|truncatewords:10 }}</td>
+                            <td class="p-3 text-[#000000]/80">{{ log.timestamp|date:"d/m/Y H:i" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="text-[#000000]/80">Aucun journal d'audit enregistré.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

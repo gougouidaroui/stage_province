@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Tableau de bord - Administrateur{% endblock %}
+{% block extra_head %}
+        body {
+            background-image: linear-gradient(to bottom right, #8C1F28, #D92525) !important;
+        }
+        main {
+            padding: 0; /* Remove padding for full-width content */
+        }
+{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center py-12" style="height:fit-content; min-height: 75vh;">
+    <div class="glass p-8 rounded-2xl shadow-2xl w-full max-w-4xl animate-fade-in-up">
+        <h1 class="text-3xl font-bold text-center text-[#044040] mb-6">Tableau de bord - Administrateur</h1>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="bg-[#F2F2F2]/10 p-4 rounded-lg hover:bg-[#F2F2F2]/20 transition-all duration-300 hover-scale">
+                <h2 class="text-lg font-semibold text-[#044040]">Utilisateurs totaux</h2>
+                <p class="text-2xl font-bold text-[#D92525]">{{ total_users }}</p>
+            </div>
+            <div class="bg-[#F2F2F2]/10 p-4 rounded-lg hover:bg-[#F2F2F2]/20 transition-all duration-300 hover-scale">
+                <h2 class="text-lg font-semibold text-[#044040]">Demandes totales</h2>
+                <p class="text-2xl font-bold text-[#D92525]">{{ total_applications }}</p>
+            </div>
+            <div class="bg-[#F2F2F2]/10 p-4 rounded-lg hover:bg-[#F2F2F2]/20 transition-all duration-300 hover-scale">
+                <h2 class="text-lg font-semibold text-[#044040]">Réclamations en attente</h2>
+                <p class="text-2xl font-bold text-[#D92525]">{{ pending_reclamations }}</p>
+            </div>
+        </div>
+        <h2 class="text-2xl font-semibold text-[#044040] mb-4">Activités récentes</h2>
+        {% if recent_activities %}
+            <ul class="space-y-4">
+                {% for activity in recent_activities %}
+                    <li class="bg-[#F2F2F2]/10 p-4 rounded-lg hover:bg-[#F2F2F2]/20 transition-all duration-300 hover-scale">
+                        <p class="font-medium text-[#D92525]">{{ activity.description }}</p>
+                        <p class="text-sm text-[#000000]/80">Utilisateur: {{ activity.user.username }} | Date: {{ activity.timestamp|date:"d/m/Y H:i" }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-[#000000]/80">Aucune activité récente.</p>
+        {% endif %}
+        <div class="mt-6 flex flex-wrap gap-4">
+            <a href="{% url 'admin_panel' %}" 
+               class="bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] px-4 py-2 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                Panneau d'administration
+            </a>
+            <a href="{% url 'manage_possession_types' %}" 
+               class="bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] px-4 py-2 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                Gérer les types de possessions
+            </a>
+            <a href="{% url 'audit_logs' %}" 
+               class="bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] px-4 py-2 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                Journaux d'audit
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

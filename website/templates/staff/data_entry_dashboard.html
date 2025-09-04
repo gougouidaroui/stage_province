@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Tableau de bord - Saisie de données{% endblock %}
+{% block extra_head %}
+        body {
+            background-image: linear-gradient(to bottom right, #8C1F28, #D92525) !important;
+        }
+        main {
+            padding: 0; /* Remove padding for full-width content */
+        }
+{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center py-12" style="height:fit-content; min-height: 75vh;">
+    <div class="glass p-8 rounded-2xl shadow-2xl w-full max-w-4xl animate-fade-in-up">
+        <h1 class="text-3xl font-bold text-center text-[#044040] mb-6">Tableau de bord - Saisie de données</h1>
+        <p class="text-[#000000]/80 mb-4">Nombre total de citoyens: {{ citizens_count }}</p>
+        
+        <!-- Recent Additions -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-semibold text-[#044040] mb-4">Ajouts récents</h2>
+            {% if recent_additions %}
+                <ul class="space-y-4">
+                    {% for possession in recent_additions %}
+                        <li class="bg-[#F2F2F2]/10 p-4 rounded-lg hover:bg-[#F2F2F2]/20 transition-all duration-300 hover-scale">
+                            <p class="font-medium text-[#D92525]">{{ possession.possession_type.name }}</p>
+                            <p class="text-sm text-[#000000]/80">Citoyen: {{ possession.citizen.username }}</p>
+                            <p class="text-sm text-[#000000]/80">Valeur: {{ possession.estimated_value|floatformat:2 }} MAD</p>
+                            <p class="text-sm text-[#000000]/80">Date d'acquisition: {{ possession.acquisition_date|date:"d/m/Y" }}</p>
+                            <p class="text-sm text-[#000000]/80">Ajouté le: {{ possession.created_at|date:"d/m/Y H:i" }}</p>
+                            <div class="mt-2 flex space-x-4">
+                                <a href="{% url 'edit_possession' possession.id %}" 
+                                   class="text-sm bg-[#D92525] text-[#F2F2F2] px-3 py-1 rounded-lg hover:bg-[#591C21] transition-all duration-300 hover-scale">
+                                    Modifier
+                                </a>
+                                <form method="post" action="{% url 'delete_possession' possession.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" 
+                                            class="text-sm bg-red-500 text-[#F2F2F2] px-3 py-1 rounded-lg hover:bg-red-600 transition-all duration-300 hover-scale"
+                                            onclick="return confirm('Voulez-vous vraiment supprimer cette possession ?');">
+                                        Supprimer
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-[#000000]/80">Aucune possession ajoutée récemment.</p>
+            {% endif %}
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <a href="{% url 'manage_citizens' %}" 
+               class="bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] p-6 rounded-xl text-center hover-scale transition-all duration-300 animate-pulse">
+                <h3 class="text-lg font-semibold">Gérer les citoyens</h3>
+                <p class="text-sm text-[#F2F2F2]/80">Ajouter ou modifier des possessions</p>
+            </a>
+            <a href="{% url 'staff_dashboard' %}" 
+               class="bg-gradient-to-r from-[#591C21] to-[#8C1F28] text-[#F2F2F2] p-6 rounded-xl text-center hover-scale transition-all duration-300 animate-pulse">
+                <h3 class="text-lg font-semibold">Rafraîchir le tableau</h3>
+                <p class="text-sm text-[#F2F2F2]/80">Actualiser les ajouts récents</p>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Mes Réclamations{% endblock %}
+{% block extra_head %}
+        body {
+            background-image: linear-gradient(to bottom right, #8C1F28, #D92525) !important;
+        }
+        main {
+            padding: 0;
+    </style>
+{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center py-12" style="height:fit-content; min-height: 75vh;">
+    <div class="glass p-8 rounded-2xl shadow-2xl w-full max-w-4xl animate-fade-in-up">
+        <h1 class="text-3xl font-bold text-center text-[#044040] mb-6">Mes Réclamations</h1>
+        {% if reclamations %}
+            <ul class="space-y-4">
+                {% for reclamation in reclamations %}
+                    <li class="bg-[#F2F2F2]/10 p-4 rounded-lg hover:bg-[#F2F2F2]/20 transition-all duration-300 hover-scale">
+                        <p class="font-medium text-[#D92525]">{{ reclamation.possession.possession_type.name }}</p>
+                        <p class="text-sm text-[#000000]/80">Raison: {{ reclamation.reason|truncatewords:10 }}</p>
+                        <p class="text-sm text-[#000000]/80">Preuves: {{ reclamation.evidence_description|default:"Aucune" }}</p>
+                        <p class="text-sm {% if reclamation.status == 'pending' %}text-yellow-500{% elif reclamation.status == 'approved' %}text-green-500{% else %}text-red-500{% endif %}">
+                            Statut: 
+                            {% if reclamation.status == 'pending' %}En attente
+                            {% elif reclamation.status == 'under_investigation' %}En cours d'investigation
+                            {% elif reclamation.status == 'approved' %}Approuvée
+                            {% elif reclamation.status == 'rejected' %}Rejetée
+                            {% elif reclamation.status == 'closed' %}Clôturée
+                            {% endif %}
+                        </p>
+                        <p class="text-sm text-[#000000]/80">Date: {{ reclamation.created_at|date:"d/m/Y" }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-[#000000]/80">Aucune réclamation enregistrée.</p>
+        {% endif %}
+        <p class="mt-6 text-[#000000]/80">Pour créer une réclamation, visitez votre <a href="{% url 'citizen_dashboard' %}" class="text-[#D92525] hover:underline">tableau de bord</a> et sélectionnez une possession active.</p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Mes demandes{% endblock %}
+{% block extra_head %}
+        body {
+            background-image: linear-gradient(to bottom right, #8C1F28, #D92525) !important;
+        }
+        main {
+            padding: 0; /* Remove padding for full-width content */
+        }
+{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center py-12" style="height:fit-content; min-height: 75vh;">
+    <div class="glass p-8 rounded-2xl shadow-2xl w-full max-w-4xl animate-fade-in-up">
+        <h1 class="text-3xl font-bold text-center text-[#044040] mb-6">Mes demandes</h1>
+        {% if applications %}
+            <ul class="space-y-4">
+                {% for application in applications %}
+                    <li class="bg-[#F2F2F2]/10 p-4 rounded-lg hover:bg-[#F2F2F2]/20 transition-all duration-300 hover-scale">
+                        <p class="font-medium text-[#D92525]">{{ application.program_type|upper }}</p>
+                        <p class="text-sm text-[#000000]/80">Indicateur social: {{ application.social_indicator_at_submission|floatformat:2 }}</p>
+                        <p class="text-sm text-[#000000]/80">Seuil: {{ application.threshold_at_submission|floatformat:2 }}</p>
+                        <p class="text-sm {% if application.status == 'draft' %}text-gray-500{% elif application.status == 'submitted' %}text-yellow-500{% elif application.status == 'under_review' %}text-blue-500{% elif application.status == 'approved' %}text-green-500{% else %}text-red-500{% endif %}">
+                            Statut: 
+                            {% if application.status == 'draft' %}Brouillon
+                            {% elif application.status == 'submitted' %}Soumise
+                            {% elif application.status == 'under_review' %}En cours d'examen
+                            {% elif application.status == 'approved' %}Approuvée
+                            {% elif application.status == 'rejected' %}Rejetée
+                            {% endif %}
+                        </p>
+                        <p class="text-sm text-[#000000]/80">Date de soumission: {{ application.submitted_at|date:"d/m/Y H:i"|default:"Non soumise" }}</p>
+                        {% if application.status == 'rejected' %}
+                            {% if not application.social_indicator_at_submission == profile.current_social_indicator or application.submitted_at < profile.last_calculated %}
+                                <p class="text-sm text-[#000000]/80 mt-2">Vous pouvez soumettre une nouvelle demande après vérification.</p>
+                                <a href="{% url 'apply' application.program_type %}" class="text-sm text-[#D92525] hover:underline">Nouvelle demande</a>
+                            {% else %}
+                                <p class="text-sm text-red-500 mt-2">Votre demande a été rejetée. <a href="{% url 'eligibility_calculator' %}" class="text-[#D92525] hover:underline">Recalculez votre indicateur social</a> pour soumettre une nouvelle demande.</p>
+                            {% endif %}
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-[#000000]/80">Aucune demande enregistrée.</p>
+        {% endif %}
+        <div class="mt-6 flex space-x-4 justify-center">
+            <a href="{% url 'create_application' 'social_aid' %}" 
+               class="bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] px-4 py-2 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                Nouvelle demande SOCIAL AID
+            </a>
+            <a href="{% url 'create_application' 'amo' %}" 
+               class="bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] px-4 py-2 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                Nouvelle demande AMO
+            </a>
+            <a href="{% url 'citizen_dashboard' %}" 
+               class="bg-gradient-to-r from-[#591C21] to-[#8C1F28] text-[#F2F2F2] px-4 py-2 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                Retour au tableau de bord
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

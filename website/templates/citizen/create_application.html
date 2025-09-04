@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Nouvelle demande - {{ program_type|upper }}{% endblock %}
+{% block extra_head %}
+        body {
+            background-image: linear-gradient(to bottom right, #8C1F28, #D92525) !important;
+        }
+        main {
+            padding: 0;
+        }
+{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center py-12" style="min-height: 75vh; height: fit-content;">
+    <div class="glass p-8 rounded-2xl shadow-2xl w-full max-w-md animate-fade-in-up">
+        <h1 class="text-3xl font-bold text-center text-[#044040] mb-6">Nouvelle demande - {{ program_type|upper }}</h1>
+        {% if messages %}
+            <div class="mb-6 space-y-3">
+                {% for message in messages %}
+                    <div class="{% if message.tags == 'success' %}bg-green-100 text-green-800 border-green-400{% else %}bg-red-100 text-red-800 border-red-400{% endif %} p-4 rounded-xl border shadow-lg animate-fade-in-up">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <p class="text-[#000000]/80 mb-4">Votre indicateur social: {{ social_indicator|floatformat:2 }}</p>
+        <p class="text-[#000000]/80 mb-4">Dernier calcul: {{ last_calculated|date:"d/m/Y H:i"|default:"Jamais calculé" }}</p>
+        {% if threshold %}
+            <p class="text-[#000000]/80 mb-4">Seuil requis pour {{ program_type|upper }}: {{ threshold|floatformat:2 }}</p>
+        {% else %}
+            <p class="text-red-500 mb-4">Aucun seuil actif défini pour {{ program_type|upper }}. Contactez l'administration.</p>
+        {% endif %}
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <p class="text-[#000000]/80">Votre indicateur social doit être calculé dans les 30 derniers jours. Vérifiez vos informations avant de soumettre.</p>
+            <button type="submit" 
+                    class="w-full bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] p-3 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse {% if not threshold or not last_calculated %}opacity-50 cursor-not-allowed{% endif %}"
+                    {% if not threshold or not last_calculated %}disabled{% endif %}>
+                Soumettre la demande
+            </button>
+        </form>
+        <a href="{% url 'my_applications' %}" 
+           class="mt-4 inline-block text-[#D92525] hover:underline text-center w-full">Voir mes demandes</a>
+        <a href="{% url 'eligibility_calculator' %}" 
+           class="mt-2 inline-block text-[#D92525] hover:underline text-center w-full">Recalculer l'indicateur</a>
+        <a href="{% url 'citizen_dashboard' %}" 
+           class="mt-2 inline-block text-[#D92525] hover:underline text-center w-full">Retour au tableau de bord</a>
+    </div>
+</div>
+{% endblock %}

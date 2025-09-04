@@ -1,0 +1,6 @@
+asgiref==3.9.1
+Django==5.2.6
+django-bootstrap5==25.2
+django-browser-reload==1.18.0
+PyYAML==6.0.2
+sqlparse==0.5.3

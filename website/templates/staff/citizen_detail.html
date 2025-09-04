@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block title %}Détails du citoyen{% endblock %}
+{% block extra_head %}
+        body {
+            background-image: linear-gradient(to bottom right, #8C1F28, #D92525) !important;
+        }
+        main {
+            padding: 0; /* Remove padding for full-width content */
+        }
+{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center py-12" style="height:fit-content; min-height: 75vh;">
+    <div class="glass p-8 rounded-2xl shadow-2xl w-full max-w-4xl animate-fade-in-up">
+        <h1 class="text-3xl font-bold text-center text-[#044040] mb-6">Détails du citoyen: {{ citizen.username }}</h1>
+        
+        <!-- Citizen Profile -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-semibold text-[#044040] mb-4">Profil</h2>
+            <p class="text-[#000000]/80">ID national: {{ citizen.national_id }}</p>
+            <p class="text-[#000000]/80">Numéro de téléphone: {{ citizen.phone_number }}</p>
+            <p class="text-[#000000]/80">Indicateur social: {{ profile.current_social_indicator|floatformat:2 }}</p>
+            <p class="text-[#000000]/80">Dernière mise à jour: {{ profile.last_calculated|date:"d/m/Y H:i" }}</p>
+        </div>
+        
+        <!-- Possessions -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-semibold text-[#044040] mb-4">Possessions</h2>
+            {% if possessions %}
+                <ul class="space-y-4">
+                    {% for possession in possessions %}
+                        <li class="bg-[#F2F2F2]/10 p-4 rounded-lg hover:bg-[#F2F2F2]/20 transition-all duration-300 hover-scale">
+                            <p class="font-medium text-[#D92525]">{{ possession.possession_type.name }}</p>
+                            <p class="text-sm text-[#000000]/80">Description: {{ possession.description|default:"Aucune" }}</p>
+                            <p class="text-sm text-[#000000]/80">Valeur: {{ possession.estimated_value|floatformat:2 }} MAD</p>
+                            <p class="text-sm text-[#000000]/80">Date d'acquisition: {{ possession.acquisition_date|date:"d/m/Y" }}</p>
+                            <p class="text-sm text-[#000000]/80">Statut: 
+                                {% if possession.status == 'active' %}Actif
+                                {% elif possession.status == 'under_investigation' %}En cours d'investigation
+                                {% elif possession.status == 'removed' %}Supprimé
+                                {% endif %}
+                            </p>
+                            {% if user.user_type == 'data_entry_staff' or user.user_type == 'admin' %}
+                                <div class="mt-2 flex space-x-4">
+                                    <a href="{% url 'edit_possession' possession.id %}" 
+                                       class="text-sm bg-[#D92525] text-[#F2F2F2] px-3 py-1 rounded-lg hover:bg-[#591C21] transition-all duration-300 hover-scale">
+                                        Modifier
+                                    </a>
+                                    <form method="post" action="{% url 'delete_possession' possession.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" 
+                                                class="text-sm bg-red-500 text-[#F2F2F2] px-3 py-1 rounded-lg hover:bg-red-600 transition-all duration-300 hover-scale"
+                                                onclick="return confirm('Voulez-vous vraiment supprimer cette possession ?');">
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                </div>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+                <a href="{% url 'add_possession' citizen.id %}" 
+                   class="mt-6 inline-block bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] px-4 py-2 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                    Ajouter une possession
+                </a>
+            {% else %}
+                <p class="text-[#000000]/80">Aucune possession enregistrée.</p>
+                <a href="{% url 'add_possession' citizen.id %}" 
+                   class="mt-6 inline-block bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] px-4 py-2 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                    Ajouter une possession
+                </a>
+            {% endif %}
+        </div>
+        
+        <!-- Reclamations -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-semibold text-[#044040] mb-4">Réclamations</h2>
+            {% if reclamations %}
+                <ul class="space-y-4">
+                    {% for reclamation in reclamations %}
+                        <li class="bg-[#F2F2F2]/10 p-4 rounded-lg hover:bg-[#F2F2F2]/20 transition-all duration-300 hover-scale">
+                            <p class="font-medium text-[#D92525]">{{ reclamation.possession.possession_type.name }}</p>
+                            <p class="text-sm text-[#000000]/80">Raison: {{ reclamation.reason|truncatewords:10 }}</p>
+                            <p class="text-sm text-[#000000]/80">Preuves: {{ reclamation.evidence_description|default:"Aucune" }}</p>
+                            <p class="text-sm {% if reclamation.status == 'pending' %}text-yellow-500{% elif reclamation.status == 'under_investigation' %}text-blue-500{% elif reclamation.status == 'approved' %}text-green-500{% else %}text-red-500{% endif %}">
+                                Statut: 
+                                {% if reclamation.status == 'pending' %}En attente
+                                {% elif reclamation.status == 'under_investigation' %}En cours d'investigation
+                                {% elif reclamation.status == 'approved' %}Approuvée
+                                {% elif reclamation.status == 'rejected' %}Rejetée
+                                {% elif reclamation.status == 'closed' %}Clôturée
+                                {% endif %}
+                            </p>
+                            <p class="text-sm text-[#000000]/80">Date: {{ reclamation.created_at|date:"d/m/Y H:i" }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-[#000000]/80">Aucune réclamation enregistrée.</p>
+            {% endif %}
+        </div>
+        
+        <!-- Applications -->
+        <div>
+            <h2 class="text-2xl font-semibold text-[#044040] mb-4">Demandes</h2>
+            {% if applications %}
+                <ul class="space-y-4">
+                    {% for application in applications %}
+                        <li class="bg-[#F2F2F2]/10 p-4 rounded-lg hover:bg-[#F2F2F2]/20 transition-all duration-300 hover-scale">
+                            <p class="font-medium text-[#D92525]">{{ application.program_type|upper }}</p>
+                            <p class="text-sm text-[#000000]/80">Indicateur social: {{ application.social_indicator_at_submission|floatformat:2 }}</p>
+                            <p class="text-sm text-[#000000]/80">Seuil: {{ application.threshold_at_submission|floatformat:2 }}</p>
+                            <p class="text-sm {% if application.status == 'submitted' %}text-yellow-500{% elif application.status == 'under_review' %}text-blue-500{% elif application.status == 'approved' %}text-green-500{% else %}text-red-500{% endif %}">
+                                Statut: 
+                                {% if application.status == 'submitted' %}Soumise
+                                {% elif application.status == 'under_review' %}En cours d'examen
+                                {% elif application.status == 'approved' %}Approuvée
+                                {% elif application.status == 'rejected' %}Rejetée
+                                {% endif %}
+                            </p>
+                            <p class="text-sm text-[#000000]/80">Date de soumission: {{ application.submitted_at|date:"d/m/Y H:i" }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-[#000000]/80">Aucune demande enregistrée.</p>
+            {% endif %}
+        </div>
+        
+        <a href="{% url 'manage_citizens' %}" 
+           class="mt-6 inline-block bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] px-4 py-2 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+            Retour aux citoyens
+        </a>
+    </div>
+</div>
+{% endblock %}

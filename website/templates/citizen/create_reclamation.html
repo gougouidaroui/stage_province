@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Créer une Réclamation{% endblock %}
+{% block extra_head %}
+        body {
+            background-image: linear-gradient(to bottom right, #8C1F28, #D92525) !important;
+        }
+        main {
+            padding: 0;
+        }
+{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center py-12" style="min-height: 75vh; height: fit-content;">
+    <div class="glass p-8 rounded-2xl shadow-2xl w-full max-w-md animate-fade-in-up">
+        <h1 class="text-3xl font-bold text-center text-[#044040] mb-6">Créer une Réclamation pour {{ possession.possession_type.name }}</h1>
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <div>
+                <label for="reason" class="block text-sm font-medium text-[#000000]">Raison</label>
+                <textarea name="reason" id="reason" required 
+                          class="mt-1 block w-full p-3 bg-[#F2F2F2]/10 border border-[#000000] rounded-lg text-[#000000] placeholder-[#000000]/50 focus:outline-none focus:ring-2 focus:ring-[#044040] focus:border-transparent transition-all duration-300"></textarea>
+            </div>
+            <div>
+                <label for="evidence_description" class="block text-sm font-medium text-[#000000]">Description des preuves</label>
+                <textarea name="evidence_description" id="evidence_description" 
+                          class="mt-1 block w-full p-3 bg-[#F2F2F2]/10 border border-[#000000] rounded-lg text-[#000000] placeholder-[#000000]/50 focus:outline-none focus:ring-2 focus:ring-[#044040] focus:border-transparent transition-all duration-300"></textarea>
+            </div>
+            <button type="submit" 
+                    class="w-full bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] p-3 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                Soumettre la Réclamation
+            </button>
+        </form>
+        {% if messages %}
+            <div class="mt-4">
+                {% for message in messages %}
+                    <p class="{% if message.tags == 'error' %}text-red-500{% else %}text-green-500{% endif %}">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

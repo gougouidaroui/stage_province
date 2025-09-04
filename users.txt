@@ -1,0 +1,20 @@
+user_type: citizen
+MA123456
++212612345678
+
+user_type: data_entry_staff
+MA789012
++212623456789
+
+user_type: investigator
+MA345678
++212634567890
+
+user_type: supervisor
+MA901234
++212645678901
+
+user_type: admin
+MA567890
++212656789012
+

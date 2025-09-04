@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Examiner la Demande{% endblock %}
+{% block extra_head %}
+        body {
+            background-image: linear-gradient(to bottom right, #8C1F28, #D92525) !important;
+        }
+        main {
+            padding: 0; /* Remove padding for full-width content */
+        }
+{% endblock %}
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12">
+    <div class="glass p-8 rounded-2xl shadow-2xl w-full max-w-md animate-fade-in-up">
+        <h1 class="text-3xl font-bold text-center text-[#044040] mb-6">Examiner la Demande</h1>
+        <p class="text-[#000000]/80 mb-4">Citoyen: {{ application.citizen.username }}</p>
+        <p class="text-[#000000]/80 mb-4">Programme: {% if application.program_type == 'amo' %}AMO{% else %}Aide Sociale{% endif %}</p>
+        <p class="text-[#000000]/80 mb-4">Score à la soumission: {{ application.social_indicator_at_submission|floatformat:4 }}</p>
+        <p class="text-[#000000]/80 mb-4">Seuil à la soumission: {{ application.threshold_at_submission|floatformat:4 }}</p>
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <div>
+                <label for="notes" class="block text-sm font-medium text-[#000000]">Notes d'examen</label>
+                <textarea name="notes" id="notes" required 
+                          class="mt-1 block w-full p-3 bg-[#F2F2F2]/10 border border-[#000000] rounded-lg text-[#000000] placeholder-[#000000]/50 focus:outline-none focus:ring-2 focus:ring-[#044040] focus:border-transparent transition-all duration-300"></textarea>
+            </div>
+            <div>
+                <label for="action" class="block text-sm font-medium text-[#000000]">Action</label>
+                <select name="action" id="action" required 
+                        class="mt-1 block w-full p-3 bg-[#F2F2F2]/10 border border-[#000000] rounded-lg text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#044040] focus:border-transparent transition-all duration-300 hover-scale">
+                    <option value="approve">Approuver</option>
+                    <option value="reject">Rejeter</option>
+                </select>
+            </div>
+            <button type="submit" 
+                    class="w-full bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] p-3 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                Soumettre la décision
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

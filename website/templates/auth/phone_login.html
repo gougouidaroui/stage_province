@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Connexion par Code SMS{% endblock %}
+{% block content %}
+<div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md mx-auto">
+    <h1 class="text-2xl font-bold text-center mb-6">Connexion par Code SMS</h1>
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div>
+            <label for="national_id" class="block text-sm font-medium text-gray-700">Identifiant National</label>
+            <input type="text" name="national_id" id="national_id" required class="mt-1 block w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+            <label for="phone_number" class="block text-sm font-medium text-gray-700">Numéro de téléphone</label>
+            <input type="text" name="phone_number" id="phone_number" required placeholder="+212xxxxxxxxx" class="mt-1 block w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Envoyer le code</button>
+    </form>
+    <p class="mt-4 text-center text-gray-600">
+        Vous avez un mot de passe ? 
+        <a href="{% url 'citizen_login' %}" class="text-blue-600 hover:underline">Connexion par mot de passe</a>
+    </p>
+</div>
+{% endblock %}

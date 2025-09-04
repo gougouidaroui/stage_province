@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Calculateur d'Éligibilité{% endblock %}
+{% block extra_head %}
+        body {
+            background-image: linear-gradient(to bottom right, #8C1F28, #D92525) !important;
+        }
+        main {
+            padding: 0;
+    </style>
+{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center py-12" style="height:fit-content; min-height: 75vh;">
+    <div class="glass p-8 rounded-2xl shadow-2xl w-full max-w-4xl animate-fade-in-up">
+        <h1 class="text-3xl font-bold text-center text-[#044040] mb-6">Calculateur d'Éligibilité</h1>
+        
+        <!-- Possessions List -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-semibold text-[#044040] mb-4">Vos Possessions Actives</h2>
+            {% if calculation_items %}
+                <ul class="space-y-4">
+                    {% for item in calculation_items %}
+                        <li class="bg-[#F2F2F2]/10 p-4 rounded-lg hover:bg-[#F2F2F2]/20 transition-all duration-300 hover-scale">
+                            <p class="font-medium text-[#D92525]">{{ item.possession.possession_type.name }}</p>
+                            <p class="text-sm text-[#000000]/80">Catégorie: {{ item.category }}</p>
+                            <p class="text-sm text-[#000000]/80">Points: {{ item.points|floatformat:2 }}</p>
+                            <p class="text-sm text-[#000000]/80">Valeur estimée: {{ item.possession.estimated_value|floatformat:2 }} MAD</p>
+                            <p class="text-sm text-[#000000]/80">Date d'acquisition: {{ item.possession.acquisition_date|date:"d/m/Y" }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-[#000000]/80">Aucune possession active enregistrée.</p>
+            {% endif %}
+        </div>
+        
+        <!-- Eligibility Results -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="glass p-6 rounded-xl shadow-xl hover-scale animate-fade-in-up">
+                <h2 class="text-lg font-semibold text-[#044040]">Indicateur Social</h2>
+                <p class="text-3xl font-bold text-[#D92525]">{{ total_score|floatformat:2 }}</p>
+            </div>
+            <div class="glass p-6 rounded-xl shadow-xl hover-scale animate-fade-in-up">
+                <h2 class="text-lg font-semibold text-[#044040]">Éligibilité AMO</h2>
+                <p class="{% if amo_eligible %}text-green-500{% else %}text-red-500{% endif %} font-bold text-xl">
+                    {% if amo_eligible %}Éligible{% else %}Non éligible{% endif %}
+                </p>
+                <p class="text-sm text-[#000000]/80">Seuil: {{ amo_threshold|floatformat:2 }}</p>
+            </div>
+            <div class="glass p-6 rounded-xl shadow-xl hover-scale animate-fade-in-up">
+                <h2 class="text-lg font-semibold text-[#044040]">Éligibilité Aide Sociale</h2>
+                <p class="{% if social_aid_eligible %}text-green-500{% else %}text-red-500{% endif %} font-bold text-xl">
+                    {% if social_aid_eligible %}Éligible{% else %}Non éligible{% endif %}
+                </p>
+                <p class="text-sm text-[#000000]/80">Seuil: {{ social_aid_threshold|floatformat:2 }}</p>
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <a href="{% url 'my_applications' %}" 
+               class="bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] p-6 rounded-xl text-center hover-scale transition-all duration-300 animate-pulse">
+                <h3 class="text-lg font-semibold">Voir Mes Demandes</h3>
+                <p class="text-sm text-[#F2F2F2]/80">Consultez vos demandes en cours</p>
+            </a>
+            <a href="{% url 'my_reclamations' %}" 
+               class="bg-gradient-to-r from-[#D92525] to-[#591C21] text-[#F2F2F2] p-6 rounded-xl text-center hover-scale transition-all duration-300 animate-pulse">
+                <h3 class="text-lg font-semibold">Voir Mes Réclamations</h3>
+                <p class="text-sm text-[#F2F2F2]/80">Consultez vos réclamations</p>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

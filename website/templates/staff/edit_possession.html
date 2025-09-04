@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Modifier la possession{% endblock %}
+{% block extra_head %}
+        body {
+            background-image: linear-gradient(to bottom right, #8C1F28, #D92525) !important;
+        }
+        main {
+            padding: 0;
+        }
+{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center py-12" style="min-height: 75vh; height: fit-content;">
+    <div class="glass p-8 rounded-2xl shadow-2xl w-full max-w-md animate-fade-in-up">
+        <h1 class="text-3xl font-bold text-center text-[#044040] mb-6">Modifier la possession pour {{ possession.citizen.username }}</h1>
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <div>
+                <label for="possession_type" class="block text-sm font-medium text-[#000000]">Type de possession</label>
+                <select name="possession_type" id="possession_type" required 
+                        class="mt-1 block w-full p-3 bg-[#F2F2F2]/10 border border-[#000000] rounded-lg text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#044040] transition-all duration-300 hover-scale">
+                    {% for category in categories %}
+                        <optgroup label="{{ category.name }}">
+                            {% for type in category.possessiontype_set.all %}
+                                <option value="{{ type.id }}" {% if type.id == possession.possession_type.id %}selected{% endif %}>
+                                    {{ type.name }} ({{ type.point_value }} points)
+                                </option>
+                            {% endfor %}
+                        </optgroup>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="description" class="block text-sm font-medium text-[#000000]">Description</label>
+                <textarea name="description" id="description" 
+                          class="mt-1 block w-full p-3 bg-[#F2F2F2]/10 border border-[#000000] rounded-lg text-[#000000] placeholder-[#000000]/50 focus:outline-none focus:ring-2 focus:ring-[#044040] transition-all duration-300 hover-scale">{{ possession.description }}</textarea>
+            </div>
+            <div>
+                <label for="acquisition_date" class="block text-sm font-medium text-[#000000]">Date d'acquisition</label>
+                <input type="date" name="acquisition_date" id="acquisition_date" value="{{ possession.acquisition_date|date:'Y-m-d' }}" required 
+                       class="mt-1 block w-full p-3 bg-[#F2F2F2]/10 border border-[#000000] rounded-lg text-[#000000] focus:outline-none focus:ring-2 focus:ring-[#044040] transition-all duration-300 hover-scale">
+            </div>
+            <div>
+                <label for="estimated_value" class="block text-sm font-medium text-[#000000]">Valeur estimée (MAD)</label>
+                <input type="number" step="0.01" name="estimated_value" id="estimated_value" value="{{ possession.estimated_value|floatformat:2 }}" 
+                       class="mt-1 block w-full p-3 bg-[#F2F2F2]/10 border border-[#000000] rounded-lg text-[#000000] placeholder-[#000000]/50 focus:outline-none focus:ring-2 focus:ring-[#044040] transition-all duration-300 hover-scale">
+            </div>
+            <button type="submit" 
+                    class="w-full bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] p-3 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                Enregistrer
+            </button>
+        </form>
+        <a href="{% url 'citizen_detail' possession.citizen.id %}" 
+           class="mt-4 inline-block text-[#D92525] hover:underline text-center w-full">Annuler</a>
+    </div>
+</div>
+{% endblock %}

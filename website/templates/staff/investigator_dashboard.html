@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Tableau de bord - Enquêteur{% endblock %}
+{% block extra_head %}
+        body {
+            background-image: linear-gradient(to bottom right, #8C1F28, #D92525) !important;
+        }
+        main {
+            padding: 0;
+    </style>
+{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center py-12" style="height:fit-content; min-height: 75vh;">
+    <div class="glass p-8 rounded-2xl shadow-2xl w-full max-w-4xl animate-fade-in-up">
+        <h1 class="text-3xl font-bold text-center text-[#044040] mb-6">Tableau de bord - Enquêteur</h1>
+        <p class="text-[#000000]/80 mb-4">Investigations terminées aujourd'hui: {{ completed_today }}</p>
+        
+        <!-- Pending Reclamations (Available for Assignment) -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-semibold text-[#044040] mb-4">Réclamations en attente</h2>
+            {% if pending_reclamations %}
+                <ul class="space-y-4">
+                    {% for reclamation in pending_reclamations %}
+                        <li class="bg-[#F2F2F2]/10 p-4 rounded-lg hover:bg-[#F2F2F2]/20 transition-all duration-300 hover-scale flex justify-between items-center">
+                            <div>
+                                <p class="font-medium text-[#D92525]">{{ reclamation.possession.possession_type.name }}</p>
+                                <p class="text-sm text-[#000000]/80">Citoyen: {{ reclamation.citizen.username }} | Date: {{ reclamation.created_at|date:"d/m/Y H:i" }}</p>
+                            </div>
+                            <form method="post" action="{% url 'assign_reclamation' reclamation.id %}">
+                                {% csrf_token %}
+                                <button type="submit" 
+                                        class="bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] px-4 py-2 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                                    Prendre en charge
+                                </button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-[#000000]/80">Aucune réclamation en attente.</p>
+            {% endif %}
+        </div>
+        
+        <!-- Assigned Investigations -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-semibold text-[#044040] mb-4">Investigations en cours</h2>
+            {% if pending_investigations %}
+                <ul class="space-y-4">
+                    {% for investigation in pending_investigations %}
+                        <li class="bg-[#F2F2F2]/10 p-4 rounded-lg hover:bg-[#F2F2F2]/20 transition-all duration-300 hover-scale flex justify-between items-center">
+                            <div>
+                                <p class="font-medium text-[#D92525]">{{ investigation.possession.possession_type.name }}</p>
+                                <p class="text-sm text-[#000000]/80">Citoyen: {{ investigation.citizen.username }} | Date: {{ investigation.created_at|date:"d/m/Y H:i" }}</p>
+                            </div>
+                            <a href="{% url 'investigate_reclamation' investigation.id %}" 
+                               class="bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] px-4 py-2 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                                Enquêter
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-[#000000]/80">Aucune investigation en cours.</p>
+            {% endif %}
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
+            <a href="{% url 'staff_dashboard' %}" 
+               class="bg-gradient-to-r from-[#591C21] to-[#8C1F28] text-[#F2F2F2] p-6 rounded-xl text-center hover-scale transition-all duration-300 animate-pulse">
+                <h3 class="text-lg font-semibold">Rafraîchir le tableau</h3>
+                <p class="text-sm text-[#F2F2F2]/80">Actualiser les investigations</p>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

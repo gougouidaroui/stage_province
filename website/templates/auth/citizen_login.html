@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Connexion par Code SMS{% endblock %}
+{% block extra_head %}
+        body {
+            background-image: linear-gradient(to bottom right, #8C1F28, #D92525) !important;
+        }
+        main {
+            padding: 0; /* Remove padding to make card full-width */
+        }
+{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center" style="height:fit-content; min-height: 75vh;">
+    <div class="glass p-8 rounded-2xl shadow-2xl w-full max-w-md animate-fade-in-up">
+        <h1 class="text-3xl font-bold text-center text-[#000] mb-6">Connexion par Code SMS</h1>
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <div>
+                <label for="national_id" class="block text-sm font-medium text-[#000]">Identifiant National</label>
+                <input type="text" name="national_id" id="national_id" required 
+                       class="mt-1 block w-full p-3 bg-[#F2F2F2]/10 border border-[#F2F2F2]/30 rounded-lg text-[#000] placeholder-[#000]/50 focus:outline-none focus:ring-2 focus:ring-[#044040] focus:border-transparent transition-all duration-300 hover-scale">
+            </div>
+            <div>
+                <label for="phone_number" class="block text-sm font-medium text-[#000]">Numéro de téléphone</label>
+                <input type="text" name="phone_number" id="phone_number" required placeholder="+212xxxxxxxxx" 
+                       class="mt-1 block w-full p-3 bg-[#F2F2F2]/10 border border-[#F2F2F2]/30 rounded-lg text-[#000] placeholder-[#000]/50 focus:outline-none focus:ring-2 focus:ring-[#044040] focus:border-transparent transition-all duration-300 hover-scale">
+            </div>
+            <button type="submit" 
+                    class="w-full bg-gradient-to-r from-[#D92525] to-[#8C1F28] text-[#F2F2F2] p-3 rounded-lg font-semibold hover:from-[#591C21] hover:to-[#D92525] transition-all duration-300 hover-scale animate-pulse">
+                Envoyer le code
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Gérer les Citoyens{% endblock %}
+{% block extra_head %}
+        body {
+            background-image: linear-gradient(to bottom right, #8C1F28, #D92525) !important;
+        }
+        main {
+            padding: 0; /* Remove padding for full-width content */
+        }
+{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center py-12" style="height:fit-content; min-height: 75vh;">
+    <div class="glass p-8 rounded-2xl shadow-2xl w-full max-w-4xl animate-fade-in-up">
+        <h1 class="text-3xl font-bold text-center text-[#044040] mb-6">Gérer les Citoyens</h1>
+        {% if citizens %}
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="bg-[#F2F2F2]/10">
+                        <th class="p-3 text-left text-[#044040] font-semibold">Nom</th>
+                        <th class="p-3 text-left text-[#044040] font-semibold">Identifiant National</th>
+                        <th class="p-3 text-left text-[#044040] font-semibold">Numéro de téléphone</th>
+                        <th class="p-3 text-left text-[#044040] font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for citizen in citizens %}
+                        <tr class="border-b border-[#F2F2F2]/20">
+                            <td class="p-3 text-[#000000]/80">{{ citizen.last_name }} {{ citizen.first_name }}</td>
+                            <td class="p-3 text-[#000000]/80">{{ citizen.national_id }}</td>
+                            <td class="p-3 text-[#000000]/80">{{ citizen.phone_number }}</td>
+                            <td class="p-3">
+                                <a href="{% url 'citizen_detail' citizen.id %}" 
+                                   class="text-[#D92525] hover:text-[#591C21] transition-all duration-300">Détails</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="text-[#000000]/80">Aucun citoyen enregistré.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
