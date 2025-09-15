@@ -202,7 +202,7 @@ def my_applications(request):
     return render(request, 'citizen/my_applications.html', {'applications': applications})
 
 @login_required
-@user_passes_test(is_citizen)
+@user_passes_test(lambda u: u.user_type == 'citizen')
 def create_application(request, program_type):
     citizen = request.user
     profile = get_object_or_404(CitizenProfile, user=citizen)
@@ -219,7 +219,15 @@ def create_application(request, program_type):
     ).first()
     
     if existing_application:
-        messages.error(request, f'Vous avez déjà une demande {program_type.upper()} en cours. Veuillez finaliser ou attendre son traitement.')
+        status_display = {
+            'draft': 'brouillon',
+            'submitted': 'soumise',
+            'under_review': 'en cours d\'examen'
+        }
+        if existing_application.status == 'draft':
+            messages.info(request, f'Vous avez une demande {program_type.upper()} en brouillon. Finalisez-la pour soumettre.')
+        else:
+            messages.error(request, f'Vous avez déjà une demande {program_type.upper()} ({status_display[existing_application.status]}). Veuillez attendre son traitement.')
         return redirect('my_applications')
     
     # Check if last application was rejected and if a new calculation occurred
@@ -229,17 +237,18 @@ def create_application(request, program_type):
     ).order_by('-submitted_at').first()
     
     if last_application and last_application.status == 'rejected':
-        # Check if a new social indicator calculation occurred after the last application
         latest_calculation = SocialIndicatorCalculation.objects.filter(
             citizen=citizen,
             calculation_date__gt=last_application.submitted_at
         ).exists()
+        is_fresh = profile.last_calculated and profile.last_calculated > last_application.submitted_at
         
-        if not latest_calculation and profile.last_calculated <= last_application.submitted_at:
+        if not (latest_calculation or is_fresh):
             messages.error(request, f'Votre dernière demande {program_type.upper()} a été rejetée. Veuillez recalculer votre indicateur social avant de soumettre une nouvelle demande.')
             return redirect('eligibility_calculator')
     
     if request.method == 'POST':
+        action = request.POST.get('action')
         try:
             # Get the latest active threshold
             threshold = SocialIndicatorThreshold.objects.filter(
@@ -251,10 +260,27 @@ def create_application(request, program_type):
                 messages.error(request, f'Aucun seuil actif défini pour le programme {program_type.upper()}.')
                 return redirect('citizen_dashboard')
             
+            # Check if social indicator exists
+            if profile.current_social_indicator is None:
+                messages.error(request, 'Vous devez avoir un indicateur social calculé pour soumettre une demande.')
+                return redirect('eligibility_calculator')
+            
+            if action == 'save_draft':
+                application = Application(
+                    citizen=citizen,
+                    program_type=program_type,
+                    status='draft',
+                    social_indicator_at_submission=profile.current_social_indicator,
+                    threshold_at_submission=threshold.max_score
+                )
+                application.save()
+                messages.success(request, f'Brouillon de demande {program_type.upper()} enregistré.')
+                return redirect('my_applications')
+            
             application = Application(
                 citizen=citizen,
                 program_type=program_type,
-                status='submitted',  # Directly set to submitted
+                status='submitted',
                 social_indicator_at_submission=profile.current_social_indicator,
                 threshold_at_submission=threshold.max_score,
                 submitted_at=timezone.now()
@@ -603,7 +629,7 @@ def get_client_ip(request):
 @login_required
 @user_passes_test(lambda u: u.user_type == 'data_entry_staff' or u.user_type == 'admin')
 def edit_possession(request, possession_id):
-    possession = get_object_or_404(CitizenPossession, id=possession_id, added_by=request.user)
+    possession = get_object_or_404(CitizenPossession, id=possession_id)
     if request.method == 'POST':
         possession_type_id = request.POST.get('possession_type')
         description = request.POST.get('description')

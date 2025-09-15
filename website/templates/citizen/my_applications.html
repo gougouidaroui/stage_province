@@ -32,7 +32,7 @@
                         {% if application.status == 'rejected' %}
                             {% if not application.social_indicator_at_submission == profile.current_social_indicator or application.submitted_at < profile.last_calculated %}
                                 <p class="text-sm text-[#000000]/80 mt-2">Vous pouvez soumettre une nouvelle demande après vérification.</p>
-                                <a href="{% url 'apply' application.program_type %}" class="text-sm text-[#D92525] hover:underline">Nouvelle demande</a>
+                                <a href="{% url 'create_application' application.program_type %}" class="text-sm text-[#D92525] hover:underline">Nouvelle demande</a>
                             {% else %}
                                 <p class="text-sm text-red-500 mt-2">Votre demande a été rejetée. <a href="{% url 'eligibility_calculator' %}" class="text-[#D92525] hover:underline">Recalculez votre indicateur social</a> pour soumettre une nouvelle demande.</p>
                             {% endif %}

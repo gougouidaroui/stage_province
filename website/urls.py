@@ -7,7 +7,6 @@ urlpatterns = [
     path('verify/', views.verify_code, name='verify_code'),
     path('logout/', views.logout_view, name='logout'),
 
-    
     # Citizen routes
     path('dashboard/', views.citizen_dashboard, name='citizen_dashboard'),
     path('calculator/', views.eligibility_calculator, name='eligibility_calculator'),
@@ -38,5 +37,4 @@ urlpatterns = [
     path('api/possession-types/<int:category_id>/', views.get_possession_types, name='get_possession_types'),
     path('api/calculate-score/', views.calculate_score_ajax, name='calculate_score_ajax'),
     path("__reload__/", include("django_browser_reload.urls")),
-
 ]
